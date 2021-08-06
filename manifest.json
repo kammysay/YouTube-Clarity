@@ -1,0 +1,18 @@
+{
+
+    "manifest_version": 2,
+    "name": "YouTube Clarity",
+    "version": "1.0",
+  
+    "description": "Prevent distraction from flashy thumbnails and other clickbait tactics on YouTube.",
+  
+    "content_scripts": [
+      {
+        "matches": ["*://*.youtube.com/*"],
+        "js": ["main.js"]
+      }
+    ],
+
+    "web_accessible_resources":["images/default_thumbnail.jpg"]
+  
+  }

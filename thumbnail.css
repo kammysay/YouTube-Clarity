@@ -1,0 +1,6 @@
+/* Currently does nothing, just experimenting with different things :) */
+#thumbnail p:nth-child(2){
+    /* height: 118px;
+    width: 210px; */
+    visibility: hidden;
+}

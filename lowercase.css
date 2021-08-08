@@ -1,0 +1,4 @@
+/* Transform video titles to lowercase */
+#video-title {
+    text-transform: lowercase;
+}

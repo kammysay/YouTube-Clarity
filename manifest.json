@@ -9,8 +9,9 @@
     "content_scripts": [
       {
         "matches": ["*://*.youtube.com/*"],
+        "run_at": "document_idle",
         "js": ["main.js"],
-        "css": ["thumbnail.css"]
+        "css": ["lowercase.css"]
       }
     ],
 

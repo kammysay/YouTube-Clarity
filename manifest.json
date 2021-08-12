@@ -5,6 +5,11 @@
     "version": "1.0",
   
     "description": "Prevent distraction from flashy thumbnails and other clickbait tactics on YouTube.",
+
+    "browser_action": {
+      "default_title": "YouTube Clarity",
+      "default_popup": "popup/popup.html"
+    },
   
     "content_scripts": [
       {
@@ -15,6 +20,7 @@
       }
     ],
 
+    "permissions": ["storage"],
+
     "web_accessible_resources":["images/default_thumbnail.jpg"]
-  
   }

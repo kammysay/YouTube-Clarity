@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body style="text-align:center">
+    <div class="main">
+        <!-- DISPLAY THE EXTENSION LOGO -->
+        <img src="logo.jpg" width="200px"></img>
+
+        <!-- OPTIONS TO CHOOSE WHEN THE EXTENSION WILL RUN -->
+        <form>
+            <div id="inputs" style="margin=5px">
+                <!-- START TIME -->
+                <label class="time">Start Time</label>
+                <input id="start-time" type="time">
+                <br>
+
+                <!-- END TIME -->
+                <label class="time">End Time</label>
+                <input id="end-time" type="time">
+                <br>
+            </div>
+            
+            <div id="button" style="margin:5px">
+                <!-- SAVE SELECTED TIMES -->
+                <form>
+                    <label class="time=button"></label>
+                    <button type="submit" id="set-time">Save Time</button>
+                    <script src="popup.js"></script>
+                </form>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

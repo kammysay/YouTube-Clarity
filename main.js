@@ -12,14 +12,34 @@ var tn_a_tags;
 
 /* Variables for determining whether or not to the extension will be run. */
 var isExtensionActive = false;
+var always_active = false;
 var start_time = -1;
 var end_time = -1;
 
 /**
- * Update the time that the extension is supposed to run from the saved
- * time in storage.
+ * Determine if the user has selected the "always active" feature.
  */
-function update_time(){
+function is_always_active(){
+    // Check storage
+    let always_res = browser.storage.local.get('alwaysActive');
+    always_res
+        .then((res) => {
+            if(res.alwaysActive == true){
+                always_active =  true;
+            }
+            else{
+                always_active = false;
+            }
+        });
+
+    return always_active;
+}
+
+/**
+ * Fetch the user's selected period of time that they would like the extension
+ * to run from storage and see if the current time is within that range.
+ */
+function is_within_time(){
     // Get the starting time
     let start_res = browser.storage.local.get('start');
     start_res
@@ -46,14 +66,12 @@ function update_time(){
     var hour = parseInt(date.getHours());
     var minute = parseInt(date.getMinutes());
 
-    // If current time greater than start time and less than end time
+    // If we are within the selected time, return true
     if(hour >= start_hour && hour < end_hour){
-        // Still need to account for the minutes.
-        isExtensionActive = true;
-        console.log("Hiding");
+        return true;
+    // Else, return false
     }else{
-        isExtensionActive = false;
-        console.log("Not Hiding");
+        return false;
     }
 
     /* Still need to add logic in for if start time is greater than end time. E.g. from 6pm to 1am */
@@ -92,13 +110,20 @@ function lowercase_titles(){
     }
 }
 
+/**
+ * Function that runs every time certain event listeners are woken up
+ */
 function event_handler(){
-    // This doesn't quite work yet.
-    if(start_time == -1 || end_time == -1){
-        update_time();
+    isExtensionActive = false;
+    // Determine whether or not the extension is currently active
+    if(is_always_active() == true){
+        isExtensionActive = true;
+    }
+    if(is_within_time() == true){
+        isExtensionActive = true;
     }
 
-    // Remove thumbnails if the extension is active
+    // If the extension is active, then do extension stuff
     if(isExtensionActive == true){
         tn_a_tags = document.querySelectorAll('[id=thumbnail]');
         remove_tns();
@@ -106,9 +131,7 @@ function event_handler(){
 }
 
 // Events that should trigger a run through of the functions
-window.addEventListener('DOMContentLoaded', update_time);
-document.addEventListener("storage", update_time);  // changes to storage (new time set)
-window.addEventListener('load', event_handler);     // When content finishes loading
-window.addEventListener('wheel', event_handler);    // When page is scrolled, new videos could load
-
-window.addEventListener('click', update_time);      // debug
+window.addEventListener('DOMContentLoaded', event_handler);   // DOM loads
+document.addEventListener("storage", event_handler);          // changes to storage (new time set)
+window.addEventListener('load', event_handler);               // When content finishes loading
+window.addEventListener('wheel', event_handler);              // When page is scrolled, new videos could load

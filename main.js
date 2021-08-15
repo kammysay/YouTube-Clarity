@@ -3,18 +3,30 @@
  * with a bland, boring image on YouTube.com.
  */
 
-/* URL to replacement thumbnail */
-/* Currently have it set to "" because it's faster than using an actual image */
+/* URL to replacement thumbnail. Set to "" because it's faster than using an actual image. */
 let tn_url = "";
 
 /* Global list of all <a> id=thumbnail tags, updated as the script runs. */
 var tn_a_tags;
 
 /* Variables for determining whether or not to the extension will be run. */
+var isExtensionOn = false;
 var isExtensionActive = false;
 var always_active = false;
 var start_time = -1;
 var end_time = -1;
+
+/**
+ * Determine if extension is turned on or off.
+ */
+function is_turned_on(){
+    let toggle_res = browser.storage.local.get('state');
+    toggle_res
+        .then((res) => {
+            if(res.state == true) isExtensionOn = true;
+            else isExtensionOn = false;
+        });
+}
 
 /**
  * Determine if the user has selected the "always active" feature.
@@ -114,13 +126,18 @@ function lowercase_titles(){
  * Function that runs every time certain event listeners are woken up
  */
 function event_handler(){
-    isExtensionActive = false;
+    // Check whether extension is on or off
+    is_turned_on();
+
+    // If extension is turned off, don't check anything else
+    if(isExtensionOn == false) return;
+
     // Determine whether or not the extension is currently active
-    if(is_always_active() == true){
+    if(is_always_active() == true || is_within_time() == true){
         isExtensionActive = true;
     }
-    if(is_within_time() == true){
-        isExtensionActive = true;
+    else{
+        isExtensionActive = false;
     }
 
     // If the extension is active, then do extension stuff

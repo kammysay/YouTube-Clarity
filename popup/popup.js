@@ -6,6 +6,60 @@
  */
 
 /**
+ * Turns the extension on or off
+ */
+function toggle_on_off(){
+    let toggle_res = browser.storage.local.get('state');
+    toggle_res
+        .then((res) => {
+            // If extension is turned on, turn it off
+            if(res.state == true){
+                // Set to off, update the logo
+                browser.storage.local.set({
+                    state: false
+                });
+                display_button();
+            }
+            // Else, it is off, turn it on
+            else{
+                // Set to on, update the logo
+                browser.storage.local.set({
+                    state: true
+                });
+                display_button();
+            }
+        });
+}
+
+/**
+ * Display the on/off button. For use by restore_options and toggle_on_off.
+ */
+function display_button(){
+    // Set the image for the logo
+    let toggle_res = browser.storage.local.get('state');
+    toggle_res
+        .then((res) => {
+            // If extension is on
+            if(res.state == true){
+                document.getElementById("toggle-on").innerHTML = '<img src="logo_on.jpg" width="225px">';
+            }
+            // If extension is off
+            else if(res.state == false){
+                document.getElementById("toggle-on").innerHTML = '<img src="logo_off.jpg" width="225px">';
+            }
+            // Else, the "state" in storage is uninitialized. 
+            else{
+                // Turn the extension on
+                browser.storage.local.set({
+                    state: true
+                });
+                // Call this function again, it will display as "on"
+                display_button();
+            }
+        });
+}
+
+/**
  * Save the time window that the user submitted to local storage
  */
 function save_options(){
@@ -27,6 +81,9 @@ function save_options(){
  * Set the value of the time input boxes to the user's saved time window
  */
 function restore_options(){
+    // Set the image for the logo
+    display_button();
+
     // Display currently selected always active mode selection
     let always_res = browser.storage.local.get('alwaysActive');
     always_res
@@ -50,7 +107,8 @@ function restore_options(){
 }
 
 // All events that could result in the need to call any functions
-document.addEventListener("DOMContentLoaded", restore_options);                             // initial popup load
-document.addEventListener("storage", restore_options);                                      // changes to storage (new time set)
-document.querySelector("form").addEventListener("submit", save_options);                    // user clicks save_time button
-document.querySelector("input[id=always-active]").addEventListener("change", save_options); // user toggles always active mode
+document.addEventListener("DOMContentLoaded", restore_options);                     // initial popup load
+document.addEventListener("storage", restore_options);                              // changes to storage (new time set)
+document.getElementById("toggle-on").addEventListener("click", toggle_on_off);      // user toggles on/off switch
+document.getElementById("always-active").addEventListener("change", save_options);  // user toggles always active mode
+document.querySelector("form").addEventListener("submit", save_options);            // user clicks save_time button

@@ -1,6 +1,6 @@
 
 
-![](icons\logo_on.png)
+![](icons/logo_on.png)
 
 
 <h1 align="center">

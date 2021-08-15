@@ -1,7 +1,7 @@
 
-
-![](icons/logo_on.png)
-
+<p align="center">
+<img src="icons/logo_on.png"></img>
+</p>
 
 <h1 align="center">
 YouTube Clarity

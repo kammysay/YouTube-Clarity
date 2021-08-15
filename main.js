@@ -9,12 +9,16 @@ let TN_URL = "";
 /* Global list of all <a> id=thumbnail tags, updated as the script runs. */
 var tn_a_tags;
 
-/* Variables for determining whether or not to the extension will be run. */
-var isExtensionOn = false;
+/**
+ * Variables for determining whether or not to the extension will be run.
+ * Variables set to -1 indicate that they are not yet set.
+ */
+var isExtensionOn = true;
 var isExtensionActive = false;
-var always_active = false;
+var always_active = -1;
 var start_time = -1;
 var end_time = -1;
+var interval_needed = true;
 
 /**
  * Determine if extension is turned on or off.
@@ -170,7 +174,7 @@ function lowercase_titles(){
 /**
  * Function that runs every time certain event listeners are woken up
  */
-function event_handler(){
+function event_handler(interval){
     // Check whether extension is on or off
     is_turned_on();
 
@@ -190,10 +194,22 @@ function event_handler(){
         tn_a_tags = document.querySelectorAll('[id=thumbnail]');
         remove_tns();
     }
+
+    // Check if we need to stop the initial interval
+    if(interval_needed == true)
+        stopLoadInterval();
+}
+
+// This interval runs at the initial load of the page, until it clears the first set of thumbnails
+var interval = setInterval(event_handler, 1000)
+function stopLoadInterval(){
+    if(always_active != -1){
+        clearInterval(interval);
+        interval_needed = false;
+    }
 }
 
 // Events that should trigger a run through of the functions
 window.addEventListener('DOMContentLoaded', event_handler);   // DOM loads
 document.addEventListener("storage", event_handler);          // changes to storage (new time set)
-window.addEventListener('load', event_handler);               // When content finishes loading
 window.addEventListener('wheel', event_handler);              // When page is scrolled, new videos could load

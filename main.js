@@ -4,7 +4,7 @@
  */
 
 /* URL to replacement thumbnail. Set to "" because it's faster than using an actual image. */
-let tn_url = "";
+let TN_URL = "";
 
 /* Global list of all <a> id=thumbnail tags, updated as the script runs. */
 var tn_a_tags;
@@ -50,6 +50,9 @@ function is_always_active(){
 /**
  * Fetch the user's selected period of time that they would like the extension
  * to run from storage and see if the current time is within that range.
+ * 
+ * This appears to be a fairly hefty function to run frequently in a content 
+ * script, but I have not noticed any significant slow down as a result of it.
  */
 function is_within_time(){
     // Get the starting time
@@ -71,22 +74,65 @@ function is_within_time(){
     let end_arr = end_time.split(":");
 
     var start_hour = parseInt(start_arr[0]);
+    var start_min = parseInt(start_arr[1]);
     var end_hour = parseInt(end_arr[0]);
+    var end_min = parseInt(end_arr[1]);
     
     // Retrieving the current time
     var date = new Date();
     var hour = parseInt(date.getHours());
-    var minute = parseInt(date.getMinutes());
+    var min = parseInt(date.getMinutes());
+    
+    // Edge Case: start_time is greater than end_time. (E.g. active from 6pm to 1am)
+    if(start_hour > end_hour){
+        // Here, it is easier to check if we are out of the selected time, so it's 
+        // essentially just inverting the regular condition
+        if(hour >= end_hour && hour <= start_hour){
+            // If current hour equals start_hour or end_hour, we need to check minutes
+            if(hour == end_hour){
+                if(min >= end_min)
+                    return false;
+            }
+            else if(hour == start_hour){
+                if(min < start_min)
+                    return false;
+            }
 
-    // If we are within the selected time, return true
-    if(hour >= start_hour && hour < end_hour){
-        return true;
-    // Else, return false
+            // Else, we are not within the selected time
+            else if(hour >= end_hour && hour < start_hour)
+                return false;
+        }
+        else
+            return true;
+    }
+
+    // Edge Case: start_time is equal to end_time. (E.g. active from 6:00pm to 6:30pm)
+    if(start_hour == end_hour){
+        // Determine if we are within the selected minutes
+        if(minute >= start_min && minute < end_minute)
+            return true;
+        else
+            return false;
+    }
+
+    // Regular: start_hour is less than end_hour
+    if(hour >= start_hour && hour <= end_hour){
+        // If current hour equals start_hour or end_hour, we need to check the minute
+        if(hour == start_hour){
+            if(min >= start_min)
+                return true;
+        }
+        else if(hour == end_hour){
+            if(min < end_min)
+                return true;
+        }
+
+        else if(hour > start_hour && hour < end_hour)
+            return true;
+        
     }else{
         return false;
     }
-
-    /* Still need to add logic in for if start time is greater than end time. E.g. from 6pm to 1am */
 }
 
 /**
@@ -99,16 +145,15 @@ function remove_tns(){
         var tn_img_tag = tn_a_tags[i].querySelector('[id=img]');
 
         // Only update the src if it has not already been updated.
-        if(tn_img_tag.src != tn_url){
-            tn_img_tag.src = tn_url;
+        if(tn_img_tag.src != TN_URL){
+            tn_img_tag.src = TN_URL;
         }
     }
 }
 
 /**
  * Sets all video titles to lowercase.
- * Function not currently being used, this is currently
- * being handled with CSS.
+ * Function not currently being used, this is currently being handled with CSS.
  */
 function lowercase_titles(){
     // querySelectorAll must be used in this case

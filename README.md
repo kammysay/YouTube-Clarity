@@ -13,6 +13,10 @@ YouTube Clarity is a browser extension that removes flashy, distracting thumbnai
 <img width="640px" src="demo.gif"></img>
 </p>
 
+<p align="center">
+<img width="640px" src="demo_img.jpg"></img>
+</p>
+
 ## Features
 - Hide thumbnails from displaying on YouTube, while still allowing video previews to play when mouse hovers over the video.
 - Set video titles to lowercase.

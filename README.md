@@ -23,4 +23,8 @@ YouTube Clarity is a browser extension that removes flashy, distracting thumbnai
 - Only run the extension during certain times of the day (user can select times through the extension popup).
 
 ## Get the Extension
-**Firefox:** https://addons.mozilla.org/en-US/firefox/addon/youtube-clarity/
+**Firefox:** 
+**[Click here](https://addons.mozilla.org/en-US/firefox/addon/youtube-clarity/)**
+
+**Google Chrome:** 
+**[Click here](https://chrome.google.com/webstore/detail/youtube-clarity/cpkhmomhgphgnpcckphebmcchlcffjke)**
